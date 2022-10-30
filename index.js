@@ -18,11 +18,12 @@ app.get('/movies/', (req, res) => {
       }, 1000)
       source.pipe(destination);
       source.on('end', ()=> {
-        console.log("Downloaded")
+        res.send("baixado")
         clearInterval(interval);
         process.exit()
       });
     })
+    res.send("aguardar")
 });
 
 app.get('/watch/', (req, res) => {

@@ -27,20 +27,22 @@ app.get('/movies/', (req, res) => {
 
 app.get('/watch/', (req, res) => {
   const { range } = req.headers;
-  const start = Number(range.replace(/\D/g, ""));
-  const size = fs.statSync("teste.mp4").size;
-  const chunkSize = 10 ** 6;
-  const end = Math.min(start + chunkSize, size - 1);
-  const contentLength = end - start + 1;
-  const headers = {
-    'Content-Range': `bytes ${start}-${end}/${size}`,
-    'Accept-Ranges': 'bytes',
-    'Content-Length': contentLength,
-    'Content-Type': 'video/mp4'
-  };
-  res.writeHead(206, headers);
-  const video = fs.createReadStream("teste.mp4", {start, end})
-  video.pipe(res);
+  if (range) {
+    const start = Number(range.replace(/\D/g, ""));
+    const size = fs.statSync("teste.mp4").size;
+    const chunkSize = 10 ** 6;
+    const end = Math.min(start + chunkSize, size - 1);
+    const contentLength = end - start + 1;
+    const headers = {
+      'Content-Range': `bytes ${start}-${end}/${size}`,
+      'Accept-Ranges': 'bytes',
+      'Content-Length': contentLength,
+      'Content-Type': 'video/mp4'
+    };
+    res.writeHead(206, headers);
+    const video = fs.createReadStream("teste.mp4", {start, end})
+    video.pipe(res);
+  }
 });
 
 app.listen(3000, () => console.log('VideoFlix Server!'));
